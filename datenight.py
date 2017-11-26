@@ -136,8 +136,7 @@ def storeMovies():
     
 
 # set data
-
-print "SET DATA\n****"
+print "RUNNING SCRAPERS\n****"
 storeRecipes()
 storeTVListings()
 storeNews()
@@ -145,7 +144,7 @@ storeMovies()
 
 
 # get data (Debug)
-print "GET DATA\n****"
+print "CHECK OUTPUT\n****"
 redisdb = redis.StrictRedis.from_url(os.environ['REDIS_URL'])
 
 print "RECIPES\n****"
