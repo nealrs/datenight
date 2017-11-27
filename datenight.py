@@ -41,6 +41,7 @@ networks = ["2", "8", "4", "1", "3", "9", "26", "16", "20", "13", "10", "32", "2
 65 IFC
 """
 movieregex = r'(\[{"id".*?}]),' # helps us find the movie data buried within RottenTomatoes HTML in a script tag
+empty_primetime_regex= r'(<p><strong>.*?pm<\/strong><\/p>)'
 
 # URL roots
 buzzfeed = "https://www.buzzfeed.com/api/v2/feeds/tasty?p="
@@ -59,8 +60,8 @@ def recipes():
     for i in ra: 
         r1 = requests.get(buzzfeed+str(i))
         # For BuzzFeed, we can use this API data format: https://newsapi.org/s/buzzfeed-api
-        assert (r1.status_code == 200), "BAD BF HTTP REQUEST"
-        assert ('buzzes' in r1.json()), "NO BF RECIPES FOUND"
+        #assert (r1.status_code == 200), "BAD BF HTTP REQUEST"
+        #assert ('buzzes' in r1.json()), "NO BF RECIPES FOUND"
         
         for b in r1.json()['buzzes']:
             if "dinner" in b['tags']:
@@ -71,11 +72,11 @@ def recipes():
         
         # For Food52, there is no API, so we scrape each page & find data we want using the class name `photo`
         r2 = requests.get(food52+str(i))
-        assert (r2.status_code == 200), "BAD F52 HTTP REQUEST"
+        #assert (r2.status_code == 200), "BAD F52 HTTP REQUEST"
 
         soup = BeautifulSoup(r2.text, 'html.parser')
         recipes = soup.find_all("a", class_="photo")
-        assert (recipes is not None), "NO F52 RECIPES FOUND"
+        #assert (recipes is not None), "NO F52 RECIPES FOUND"
 
         for rec in recipes:
             list.append({
@@ -83,10 +84,8 @@ def recipes():
                 "title" : rec.get('title').encode('utf-8')
             })
         
-    assert (list is not None), "RECIPE LIST IS EMPTY"
+    #assert (list is not None), "RECIPE LIST IS EMPTY"
     return list
-    """redisdb = redis.StrictRedis.from_url(os.environ['REDIS_URL'])
-    return redisdb.set("recipes", str(json.dumps(list)))"""
 
 
 def TVListings():
@@ -95,31 +94,26 @@ def TVListings():
     list =[]
     r = requests.get(tvmaze + today)
     # TVMAZE API DOCS & return format: https://www.tvmaze.com/api#schedule
-    assert (r.status_code == 200), "BAD TV MAZE HTTP REQUEST"
+    #assert (r.status_code == 200), "BAD TV MAZE HTTP REQUEST"
     
     for t in r.json():
         if (t['airtime'][:2] in primetime) and (str(t['show']['network']['id']) in networks):
             list.append({ 
                 "show" : t['show']['name'],
-                "episode" : t['name'],
                 "network" : t['show']['network']['name'],
                 "airtime" : t['airtime'],
-                "runtime" : t['runtime'],
-                "summary" : t['summary'],
                 "url" : t['url']
             })
 
-    assert (list is not None), "NO TV LISTINGS FOUND FOR TODAY"
+    #assert (list is not None), "NO TV LISTINGS FOUND FOR TODAY"
     return list
-    """redisdb = redis.StrictRedis.from_url(os.environ['REDIS_URL'])
-    return redisdb.set("tvlistings", str(json.dumps(list)))"""
 
 
 def news():
     list =[]
     rss = feedparser.parse(voxnews)
-    assert (rss is not None), "RSS PARSING ERROR"
-    assert (rss['entries'] is not None), "NO NEWS STORIES FOUND"
+    #assert (rss is not None), "RSS PARSING ERROR"
+    #assert (rss['entries'] is not None), "NO NEWS STORIES FOUND"
 
     for index, s in enumerate(rss['entries']):
         if index == 3:
@@ -129,15 +123,13 @@ def news():
             "title" : s['title']
         })
     return list
-    """redisdb = redis.StrictRedis.from_url(os.environ['REDIS_URL'])
-    return redisdb.set("dailynews", str(json.dumps(list)))"""
 
 
 def newMovies():
     # Opening this week
     list=[]
     r = requests.get(newmovies)
-    assert (r.status_code == 200), "BAD RT HTTP REQUEST (NEW)"
+    #assert (r.status_code == 200), "BAD RT HTTP REQUEST (NEW)"
     # use regex to capture movie data from source code block.
     movies = json.loads(re.search(movieregex, r.text).groups()[0])
     i=0
@@ -152,8 +144,6 @@ def newMovies():
             })
             i = i+1
     return list
-    """redisdb = redis.StrictRedis.from_url(os.environ['REDIS_URL'])
-    return redisdb.set("newmovies", str(json.dumps(list)))"""
     # if no new movies, that's ok, there will be an empty list, which is ok.
 
 
@@ -161,11 +151,11 @@ def topMovies():
     # Tops at the box office
     list=[]
     r = requests.get(intheatres)
-    assert (r.status_code == 200), "BAD RT HTTP REQUEST (IN THEATRES)"
+    #assert (r.status_code == 200), "BAD RT HTTP REQUEST (IN THEATRES)"
     # use regex to capture movie data from source code block.
     movies = json.loads(re.search(movieregex, r.text).groups()[0])
     # if no movies in theatres, then we have a problem, because that's highly unlikely. There's always something playing, so there should always be some top movies.
-    assert (movies is not None), "NO MOVIES FOUND IN THEATRES ~ HIGHLY UNLIKELY"
+    #assert (movies is not None), "NO MOVIES FOUND IN THEATRES ~ HIGHLY UNLIKELY"
     i=0
     for m in movies:
         if i > 2:
@@ -178,10 +168,8 @@ def topMovies():
             })
             i=i+1
 
-    assert (list is not None), "NO HIGH QUALITY MOVIES FOUND TODAY" #while unlikely, it is possible we won't have any good movies
+    #assert (list is not None), "NO HIGH QUALITY MOVIES FOUND TODAY" #while unlikely, it is possible we won't have any good movies
     return list
-    """redisdb = redis.StrictRedis.from_url(os.environ['REDIS_URL'])
-    return redisdb.set("topmovies", str(json.dumps(list)))"""
 
 
 # PROCESS DATA & ASSEMBLE EMAIL
@@ -224,7 +212,7 @@ def tvHTML(data):
             if time == t: 
                 line = line + ("<a href=\"%s\">%s</a> (%s), " % (e['url'], e['show'], e['network']))
         line = line[:-2] +"</p>"
-        line = re.sub(r'(<p><strong>.*?pm<\/strong><\/p>)', '', line) # excise empty timeslots from html
+        line = re.sub(empty_primetime_regex, '', line) # excise empty timeslots from html
         html = html + line
     return html
 
@@ -261,28 +249,9 @@ def topMovieHTML(data):
     return html
 
 
-# get data
-print "RUNNING SCRAPERS\n****"
 
-"""
-print "RECIPES\n****"
-print recipes()
-
-print "TV LISTINGS\n****"
-print TVListings()
-
-print "NEWS\n****"
-print news()
-
-print "NEW MOVIES\n****"
-print newMovies()
-
-print "TOP MOVIES\n****"
-print topMovies()
-"""
-
-print "GENERATING EMAIL HTML\n****"
-html = assembleEmail()
-print html 
-
-previewHTML(html)
+if __name__ == "__main__":
+    print "RUNNING SCRAPERS & GENERATING EMAIL HTML\n****"
+    html = assembleEmail()
+    print html 
+    previewHTML(html)

@@ -15,10 +15,8 @@ This code sample is comprised of five web scraper methods, which feed into gener
 As part of a larger application (not included here), a daily cron job runs the scrapers, stores the data in Redis, and then generates & sends a customized HTML email to me & my girlfriend. I chose to only include the scrapers & HTML generation in this sample, because the core data is what matters most.
 
 # Setup & execution
-Install dependencies `pip install -r requirements.txt` and run `python datenight.py` to execute the script. It should both print to console & open a webbrowser with final HTML output.
+Install dependencies `pip install -r requirements.txt` and run `python datenight.py` to execute the script. It should both print the final HTML to console & open a webbrowser to render it.
 
 # Testing
 
-Assertion tests are included inline to ensure HTTP requests are successful and that they do contain useful data. If no data is found or API results are empty, the script will throw an `AssertionError`.
-
-
+Execute the included PyUnit tests by running `python datenight_tests.py`. Unit tests are written to ensure that data exists / is in the right format for HTML output. 
