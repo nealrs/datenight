@@ -1,10 +1,10 @@
-# Date Night Script
+# Date Night Planner
 
 My girlfriend and I often find ourselves in _analysis paralysis_ when date night roles around. Should we go out? Stay in? What would we even cook? Is there anything good on TV tonight / at the movies? What if we just want to talk?
 
 It's not a serious problem, but it made me think: why not use technology to improve my relationship? Because I'd prefer to enjoy my time with Bae, rather than planning it.
 
-This code sample is comprised of five web scraper methods, which feed into generator functions which compose the body of an HTML email:
+This code sample is comprised of five main web scraper methods, which feed into generator functions that compose the body of an HTML email:
 
 1. `storeRecipes()` ~ Scrapes BuzzFeed Tasty & Food52 for dinner recipes we can cook at home (returns JSON)
 2. `storeTVListings()` ~ Scrapes TV Maze for tonight's primetime TV listings for our agreed upon channels (returns JSON)
