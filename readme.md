@@ -1,29 +1,21 @@
 # Date Night Script
 
-My girlfriend and I find ourselves in analysis paralysis when date night roles around. Should we go out? Stay in? What would we even cook? Is there anything good on TV tonight / at the movies? What if we just want to talk?
+My girlfriend and I often find ourselves in _analysis paralysis_ when date night roles around. Should we go out? Stay in? What would we even cook? Is there anything good on TV tonight / at the movies? What if we just want to talk?
 
-It's not a serious problem, but it made me think: why can't I use technology to improve my relationship? Because I'd like to enjoy my time with her, rather than planning it.
+It's not a serious problem, but it made me think: why not use technology to improve my relationship? Because I'd prefer to enjoy my time with Bae, rather than planning it.
 
-This code sample is comprised of four web scraper methods:
+This code sample is comprised of five web scraper methods, which feed into generator functions which compose the body of an HTML email:
 
 1. `storeRecipes()` ~ Scrapes BuzzFeed Tasty & Food52 for dinner recipes we can cook at home (returns JSON)
 2. `storeTVListings()` ~ Scrapes TV Maze for tonight's primetime TV listings for our agreed upon channels (returns JSON)
-3. `storeNews()` ~ Retrieves the latest 3 stories from Vox's RSS feed. (returns HTML)
-4. `storeMovies()` ~ Scrapes Rotten Tomatoes for this week's new releases & what's tops at the box office, based on our RT score criteria. (returns HTML)
+3. `storeNews()` ~ Retrieves the latest 3 stories from Vox's RSS feed. (returns JSON)
+4. `storeNewMovies()` ~ Scrapes Rotten Tomatoes for this week's new releases, based on our RT score criteria. (returns JSON)
+5. `storeTopMovies()` ~ Scrapes Rotten Tomatoes for this week's top movies at the box office, based on our RT score criteria. (returns JSON)
 
-As part of a larger application (not included here), a daily cron job runs the scrapers, stores the data in Redis, and sends a customized HTML email to me & my girlfriend. 
+As part of a larger application (not included here), a daily cron job runs the scrapers, stores the data in Redis, and then generates & sends a customized HTML email to me & my girlfriend. I chose to only include the scrapers & HTML generation in this sample, because the core data is what matters most.
 
-I chose to only include the scrapers in this sample, because the core data is what matters most.
-
-# Setup
-1. Install dependencies: `pip install -r requirements.txt`
-2. Set a `REDIS_URL` environment variable. Does not matter if it's a local or remote Redis instance.
-
-# Running the script
-
-Run `python datenight.py` to run scrapers and review the output. 
-
-`storeRecipes()` and `storeTVListings()` return JSON for further processing in a larger app/email script. `storeNews()` and `storeMovies()` return HTML strings ready for rendering in app/email.
+# Setup & execution
+Install dependencies `pip install -r requirements.txt` and run `python datenight.py` to execute the script. It should both print to console & open a webbrowser with final HTML output.
 
 # Testing
 
