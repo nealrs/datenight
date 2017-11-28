@@ -12,6 +12,7 @@ link_regex = r'(<a href=\".*?\">.*?<\/a>)' #regex string to identify links
 comma_regex = r'(<p>.*?,<\/p>)' #regex string to identify paragraphs w/ links
 
 ## TEST SCRAPERS - primarily concerned with size & format of data objects (all neccesary keys exist) - ensures data will be displayed properly. Additionally, if URLs match data providers, good assumption that data is right.
+## For the sake of simplicity, let's assume APIs always return 200 & HTML formats are constant on scraped pages. 
 class recipeTest(unittest.TestCase):
     def setUp(self):
         self.recipes = recipes()

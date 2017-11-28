@@ -19,4 +19,5 @@ Install dependencies `pip install -r requirements.txt` and run `python datenight
 
 # Testing
 
-Execute the included PyUnit tests by running `python datenight_tests.py`. Unit tests are written to ensure that data exists / is in the right format for HTML output. 
+Execute the included tests by running `python datenight_tests.py`. Unit tests are written to ensure that data exists / is in the right format for HTML output. Because this is scraper with immediate visual output, I assumed that all APIs always return `200` and scraped HTML patterns are constant. 
+

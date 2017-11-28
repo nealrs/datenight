@@ -15,6 +15,7 @@ import feedparser
 import re
 import random
 import webbrowser
+import io
 
 #logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
 
@@ -190,8 +191,8 @@ def previewHTML(html):
     # PREVIEW EMAIL IN BROWSER
     path = os.path.abspath('temp.html')
     url = 'file://' + path
-    with open(path, 'w') as f:
-        f.write(html.encode('utf-8'))
+    with io.open(path, mode='w', encoding="utf-8") as f:
+        f.write(html)
     webbrowser.open(url)
 
 
